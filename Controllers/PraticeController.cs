@@ -1,4 +1,6 @@
 using Application.Interfaces;
+using CodeElevate.DTOs;
+using CodeElevate.Extensions;
 using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,10 +18,20 @@ namespace CodeElevate.Controllers
             _productionService = productionService;
         }
 
-        [HttpGet]
-        public List<Product> Get()
+        [HttpGet("Paginated")]
+        public IActionResult GetPaginated(int page, int pageSize)
         {
-            return _productionService.GetAll();
+            if (page < 1 || pageSize < 1)
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Invalid pagination parameters",
+                    Detail = "page and pageSize must be greater than 0.",
+                    Status = 400
+                });
+
+            var products = QueryableExtensions.Paginate<Product>(_productionService.GetAll().OrderBy(x => x.Id), page, pageSize);
+
+            return Ok(products);
         }
     }
 }
