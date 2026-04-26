@@ -82,7 +82,7 @@ Those projects are responsible for business services and data access used by thi
 
 Requirements:
 
-- .NET 9 SDK
+- .NET 10 SDK
 
 Run the API with:
 
